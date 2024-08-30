@@ -2,8 +2,8 @@
   description = "Reproducible toolchain for building and testing Supervisor Lookup";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-21.05";
-    mvn2nix-pkgs.url = "github:johannesloetzsch/mvn2nix/master";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
+    mvn2nix-pkgs.url = "github:fzakaria/mvn2nix";
   };
 
   outputs =
@@ -15,16 +15,18 @@
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs {
-        system = "x86_64-linux";
+        inherit system;
         overlays = [ (import ./frontend/nix/deps/cypress/cypress-overlay.nix) ];
       };
-      mvn2nix = mvn2nix-pkgs.legacyPackages.x86_64-linux.mvn2nix;
+      mvn2nix = mvn2nix-pkgs.legacyPackages.${system}.mvn2nix;
       buildMavenRepositoryFromLockFile =
-        mvn2nix-pkgs.legacyPackages.x86_64-linux.buildMavenRepositoryFromLockFile;
+        mvn2nix-pkgs.legacyPackages.${system}.buildMavenRepositoryFromLockFile;
     in
-    rec {
-      packages.x86_64-linux = {
-        inherit nixpkgs pkgs;
+    {
+      packages.${system} = {
+        inherit nixpkgs pkgs mvn2nix;
+
+        default = self.packages.${system}.fullstack;
 
         ## Tools
         backendUpdatedDeps = import ./backend/nix/tools/updated-deps.nix { inherit pkgs mvn2nix; };
@@ -40,12 +42,12 @@
         frontend = import ./frontend/nix/swlkup-frontend.nix { inherit pkgs; };
         fullstack = import ./backend/nix/swlkup-backend.nix {
           inherit pkgs buildMavenRepositoryFromLockFile;
-          patchPublic = packages.x86_64-linux.frontend.staticHTML;
+          patchPublic = self.packages.${system}.frontend.staticHTML;
         };
       };
 
-      defaultPackage.x86_64-linux = packages.x86_64-linux.fullstack;
-
-      devShell.x86_64-linux = import ./shell.nix { inherit pkgs; };
+      devShells.${system} = {
+        default = import ./shell.nix { inherit pkgs; };
+      };
     };
 }

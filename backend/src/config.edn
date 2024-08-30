@@ -6,7 +6,7 @@
 
  :db-inmemory false
  :db-dir "./data/xtdb/rocksdb"
- ;:db-seed "./src/swlkup/db/seed/example.edn"  ;; set it explicitly
+ :db-seed "./backend/src/swlkup/db/seed/example.edn"  ;; set it explicitly
  :db-export-prefix "./data/export/"
  :db-validate true
 
@@ -19,7 +19,7 @@
  :mail-port 587
  :mail-from nil
 
- :admin-passphrase nil
+ :admin-passphrase "yippie"
  :admin-gpg-id "9EA68B7F21204979645182E4287B083353C3241C"
 
  :frontend-base-url "http://localhost:4000"

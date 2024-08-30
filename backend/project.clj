@@ -12,7 +12,7 @@
                  ;; graphql + http
                  [org.clojars.johannesloetzsch/specialist-server "0.7.0" :exclusions [com.ibm.icu/icu4j]]
                  [compojure "1.7.0"]
-                 [ring/ring-core "1.10.0"]
+                 [ring/ring-core "1.12.2"]
                  [ring/ring-jetty-adapter "1.10.0"]
                  [ring/ring-devel "1.10.0"]
                  [ring-cors "0.1.13"]
@@ -43,6 +43,7 @@
                                   [ring/ring-mock "0.4.0"]
                                   ;; additional deps to run `lein test` 
                                   [nrepl/nrepl "1.0.0"]
+                                  [org.nrepl/incomplete "0.1.0"]
                                   [clojure-complete/clojure-complete "0.2.5"]]
                    #_#_:jvm-opts ["-Dverbose=true"]}
              :test {:jvm-opts ["-Ddb-inmemory=true" "-Ddb-seed=./src/swlkup/db/seed/example.edn" "-Ddb-export-prefix="]}

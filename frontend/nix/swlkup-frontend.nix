@@ -1,8 +1,10 @@
-{pkgs ? import <nixpkgs> {},
- nodejs ? pkgs.nodejs-12_x,
- lib ? pkgs.lib,
- stdenv ? pkgs.stdenv,
- ...}:
+{
+  pkgs ? import <nixpkgs> { },
+  nodejs ? pkgs.nodejs_22,
+  lib ? pkgs.lib,
+  stdenv ? pkgs.stdenv,
+  ...
+}:
 
 let
   src = stdenv.mkDerivation {
@@ -13,9 +15,14 @@ let
     '';
   };
 
-  nodeDependencies = (pkgs.callPackage ./deps/default.nix {}).shell.nodeDependencies;
+  nodeDependencies = (pkgs.callPackage ./deps/default.nix { }).shell.nodeDependencies;
 
-  deps = [ nodejs ] ++ (with pkgs; [ which coreutils ]);
+  deps =
+    [ nodejs ]
+    ++ (with pkgs; [
+      which
+      coreutils
+    ]);
 
   staticHTML = stdenv.mkDerivation {
     name = "swlkup-frontend-staticHTML";
@@ -42,15 +49,12 @@ let
     '';
   };
 in
-lib.mergeAttrs
-  (pkgs.writeScriptBin "swlkup-frontend" ''
-    #!${pkgs.runtimeShell} -e
+lib.mergeAttrs (pkgs.writeScriptBin "swlkup-frontend" ''
+  #!${pkgs.runtimeShell} -e
 
-    ## Note: we could strip the following dependencies further down, since only runtime deps of minimalServer are required.
-    export PATH="${nodeDependencies}/bin:${lib.makeBinPath deps}:$PATH"
-    export NODE_PATH=${nodeDependencies}/lib/node_modules
+  ## Note: we could strip the following dependencies further down, since only runtime deps of minimalServer are required.
+  export PATH="${nodeDependencies}/bin:${lib.makeBinPath deps}:$PATH"
+  export NODE_PATH=${nodeDependencies}/lib/node_modules
 
-    node ${minimalServer}/serve.js ${staticHTML}
-    ''
-  )
-  { inherit staticHTML nodeDependencies; }
+  node ${minimalServer}/serve.js ${staticHTML}
+'') { inherit staticHTML nodeDependencies; }

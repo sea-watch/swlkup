@@ -1,7 +1,12 @@
 { pkgs }:
 
 pkgs.mkShell {
-  buildInputs = with pkgs; [ coreutils ];
+  buildInputs = with pkgs; [
+    coreutils
+    maven
+    leiningen
+    nodejs_22
+  ];
   shellHook = ''
     set -e
     cd backend
