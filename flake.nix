@@ -16,7 +16,14 @@
       system = "x86_64-linux";
       pkgs = import nixpkgs {
         inherit system;
-        overlays = [ (import ./frontend/nix/deps/cypress/cypress-overlay.nix) ];
+        overlays = [
+          (import ./frontend/nix/deps/cypress/cypress-overlay.nix)
+          (self: super: {
+            # We run jdk 17 in prod and compiling clojure on jdk21 creates stuff that
+            # can't run on 17: https://aphyr.com/posts/369-classnotfoundexception-java-util-sequencedcollection
+            jdk = self.jdk17;
+          })
+        ];
       };
       mvn2nix = mvn2nix-pkgs.legacyPackages.${system}.mvn2nix;
       buildMavenRepositoryFromLockFile =

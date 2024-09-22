@@ -13,11 +13,11 @@
  :upload-dir "./data/upload"
  :upload-limit-mb 1
 
- :mail-host ""
+ :mail-host "localhost"
  :mail-user ""
  :mail-pass ""
- :mail-port 587
- :mail-from nil
+ :mail-port 8025
+ :mail-from "simon-trying-stuff@sea-watch.org"
 
  :admin-passphrase "yippie"
  :admin-gpg-id "9EA68B7F21204979645182E4287B083353C3241C"

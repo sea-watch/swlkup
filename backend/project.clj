@@ -25,7 +25,7 @@
                  [likid_geimfari/secrets "2.1.1"]
                  [crypto-random "1.2.1"]
                  [buddy/buddy-sign "3.4.333"]
-                 #_[com.draines/postal "2.0.4"]
+                 [com.draines/postal "2.0.4"]
                  ;; graphiql  ;; TODO not required for productive build
                  [ring-webjars "0.2.0" :exclusions [org.webjars/webjars-locator]]
                    [org.webjars/webjars-locator "0.46"]

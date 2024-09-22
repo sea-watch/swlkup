@@ -48,26 +48,28 @@
 
 (defn strip-secrets [env]
   (assoc env :mail-pass "*"
-             :admin-passphrase "*"))
+         :admin-passphrase "*"))
 
 (defn filter-defined [keys-spec m]
   (let [req-un (last (s/form keys-spec))
         unnamespaced-keys (map #(-> (clojure.string/replace %
                                                             (if-let [n (namespace %)]
-                                                                    (str n "/")
-                                                                    "")
+                                                              (str n "/")
+                                                              "")
                                                             "")
                                     (clojure.string/replace ":" "")
                                     keyword)
                                req-un)]
-       (select-keys m (into [] unnamespaced-keys))))
+    (select-keys m (into [] unnamespaced-keys))))
+
+(defn mkEnv [] (let [env (->> (merge (config.core/load-env)
+                                     (args))  ;; allows: (mount/start-with-args {…})
+                              (filter-defined ::env))
+                     config-errors (s/explain-data ::env env)]
+                 (when (:verbose env)
+                   (println (strip-secrets env)))
+                 (assert (not config-errors) (with-out-str (s/explain-out config-errors)))
+                 env))
 
 (defstate env
-  :start (let [env (->> (merge (config.core/load-env)
-                               (args))  ;; allows: (mount/start-with-args {…})
-                        (filter-defined ::env))
-               config-errors (s/explain-data ::env env)]
-              (when (:verbose env)
-                    (println (strip-secrets env)))
-              (assert (not config-errors) (with-out-str (s/explain-out config-errors)))
-              env))
+  :start (mkEnv))
