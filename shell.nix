@@ -8,7 +8,6 @@ pkgs.mkShell {
     nodejs_22
   ];
   shellHook = ''
-    set -e
     cd backend
     export PATH=./resources/mock:$PATH
     export DB_INMEMORY=true
